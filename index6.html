@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=60mm, initial-scale=1.0"> <!-- Cambiar el ancho de la vista para el papel de 58mm -->
+    <title>Ticket de Compra</title>
+    <style>
+     body {
+            font-family: tahoma, Helvetica, sans-serif;
+            margin: 0;
+            font-size: 3mm;
+            text-align: center; /* Centrar todo el contenido */
+        }
+
+        #thermal-pos {
+           
+            margin: none;
+            max-width: 60mm;
+            
+        }
+
+        .label {
+            margin: 0;
+            margin-left: 0.5mm;
+        }
+
+        .table {
+          
+            border-collapse: collapse; /* Elimina el espacio entre celdas */
+            border-collapse: collapse;
+            border-spacing: 0;
+            
+        }
+
+        .table-header h2 {
+            margin: 0;
+            padding-left: 0.5mm;
+            
+        }
+        .table-footer.top-line td,
+        
+        .table-footer {
+            margin-left: 0.5mm;
+        }
+        .table-footer h2 {
+            margin: 0; /* Asegurarte de que no haya margen dentro de los elementos h2 */
+            padding: 1mm 0; /* Ajustar el padding superior e inferior */
+        }
+        .table-footer h4 {
+            margin: 0; /* Asegurarte de que no haya margen dentro de los elementos h2 */
+            padding: 1mm 0; /* Ajustar el padding superior e inferior */
+        }
+        .saldo-text {
+            margin: 0;
+            margin-left: 0.1mm;
+        }
+
+        .policy {
+            margin-left: 0.5mm;
+        }
+
+      /* Agrega el estilo para eliminar el espacio vertical en las celdas de las filas de la tabla */
+      .table-footer td {
+          padding: 0;
+          line-height: 1;
+      }
+      .nro_boleta {
+        margin: 0;
+        padding: 0;
+    }
+    .nro_mesa {
+        margin: 0;
+    }
+    .fecha_recepcion {
+        margin: 0;
+    }
+    
+    .info-tienda {
+        margin: 0;
+    }
+    .m-0 {
+        margin: 0;
+    }
+    .direccion {
+        margin: 0;
+        
+    }
+    .ticket {
+        margin: 0;
+        
+    }
+  
+
+    </style>
+  </head>
+  <body onload="window.print()" onfocus="window.close()">
+
+    <script>
+        // Obtener los parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
+
+        // Obtener los valores de los parámetros
+        var nro_boleta = params.has('boleta') ? params.get('boleta') : "---";
+        var nro_mesa = params.has('mesa') ? params.get('mesa') : "---";
+        var direc = params.has('direccion') ? params.get('direccion') : "---";
+        
+
+        var fecha = params.has('fecha') ? params.get('fecha') : "dd/mm/aaaa hh:mm:ss";
+        var fecha_entrega = params.has('fecha_entrega') ? params.get('fecha_entrega') : "hh:mm:ss";
+        var domi = params.has('domi') ? params.get('domi') : "N/A";
+        var propina = params.has('propina') ? params.get('propina') : "N/A";
+
+        var total = params.has('total') ? params.get('total') : "";
+        var subtotal_desc = params.has('subtotal_desc') ? params.get('subtotal_desc') : " ";
+        var descuento = params.has('descuento') ? params.get('descuento') : " ";
+        var estado = params.has('estado') ? params.get('estado') : "--";
+
+        //Recibe los datos de los servicios (separados por comas)
+        var cantidades = params.has('cantidades') ? params.get('cantidades') : "0";
+        var descripciones = params.has('servicios') ? params.get('servicios') : "No hay articulos";
+        var p_units = params.has('p_unit') ? params.get('p_unit') : "0.00";
+        
+        //Formato de 2 decimales
+        propina = parseFloat(propina).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        domi = parseFloat(domi).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        total = parseFloat(total).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        descuento = parseFloat(descuento).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        subtotal_desc = parseFloat(subtotal_desc).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        
+        //crea una lista de cada columna a partir de las comas.
+        cantidades = cantidades.split(",");
+        descripciones = descripciones.split(","); 
+        p_units = p_units.split(",");
+
+        //Crea una lista para mostrar en cada fila de la tabla
+        var result = [];
+
+        cantidades.forEach(function(value, id) {
+            result[id] = {
+                cantidad: cantidades[id],
+                descripcion: descripciones[id], // + " " + detalles[id], // Descomenta si deseas concatenar la descripción con el detalle
+                precio_unit: parseFloat(p_units[id]).toLocaleString('es-ES', { minimumFractionDigits: 0 }),
+            };
+        });
+    </script>
+    <div id="thermal-pos">
+        <div class="label">
+            <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                width="80%" viewBox="0 0 1935.000000 701.000000" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(0.000000,701.000000) scale(0.100000,-0.100000)"
+                    fill="#000000" stroke="none">
+                    <path d="M17170 6484 c-116 -10 -336 -47 -445 -73 -157 -39 -275 -81 -410
+                    -146 -415 -201 -681 -530 -762 -943 -26 -132 -23 -386 6 -520 76 -359 285
+                    -605 672 -791 225 -109 411 -166 914 -282 387 -89 525 -128 640 -183 153 -73
+                    222 -152 232 -266 16 -169 -115 -294 -362 -345 -485 -100 -1211 50 -1711 352
+                    l-81 49 -203 -455 -203 -455 29 -23 c48 -38 212 -125 339 -179 300 -129 639
+                    -213 1040 -260 211 -25 668 -25 850 0 565 77 982 274 1239 588 191 233 285
+                    497 286 803 0 492 -226 834 -703 1060 -213 101 -448 171 -922 275 -437 96
+                    -603 148 -720 226 -101 66 -141 143 -132 250 6 78 35 141 93 197 57 57 119 90
+                    225 121 389 112 966 21 1481 -234 l116 -58 20 46 c78 183 362 875 360 876 -26
+                    18 -140 76 -211 108 -265 117 -568 199 -909 244 -117 16 -651 28 -768 18z"/>
+                    <path d="M670 5930 l0 -480 755 0 756 0 -4 -1027 c-3 -938 -4 -1034 -20 -1092
+                    -75 -276 -268 -413 -562 -398 -241 13 -440 128 -665 388 l-57 66 -329 -390
+                    c-181 -214 -332 -396 -337 -403 -9 -16 68 -106 171 -197 262 -232 616 -383
+                    1032 -439 142 -19 527 -16 675 6 820 118 1252 601 1314 1467 7 89 11 686 11
+                    1562 l0 1417 -1370 0 -1370 0 0 -480z"/>
+                    <path d="M5225 4238 c-527 -1195 -962 -2181 -967 -2190 -8 -17 25 -18 625 -18
+                    l633 0 171 423 171 422 420 3 420 2 6 23 c3 12 6 63 6 112 0 192 -37 293 -130
+                    357 -159 110 -226 184 -296 323 -107 215 -110 494 -9 814 59 185 150 340 281
+                    480 91 97 152 131 234 131 81 0 142 -34 233 -129 132 -139 212 -273 278 -471
+                    58 -173 83 -335 76 -490 -9 -198 -57 -336 -166 -472 -53 -67 -92 -102 -209
+                    -185 -56 -40 -89 -85 -108 -148 -18 -60 -30 -233 -20 -298 l7 -47 413 0 414 0
+                    132 -327 c73 -181 150 -372 173 -426 l40 -97 643 0 c354 0 644 1 644 3 0 2
+                    -435 986 -968 2188 l-967 2184 -611 3 -610 2 -959 -2172z"/>
+                    <path d="M10193 5033 c3 -1529 -1 -1432 71 -1723 171 -688 647 -1146 1356
+                    -1304 214 -47 343 -60 625 -60 360 0 586 33 853 126 273 94 473 217 668 412
+                    151 151 231 264 322 456 93 194 144 362 185 613 21 130 21 155 24 1495 l4
+                    1362 -610 0 -610 0 -4 -1322 c-3 -1192 -5 -1331 -20 -1408 -81 -409 -266 -624
+                    -595 -692 -130 -27 -358 -21 -472 12 -348 100 -524 373 -560 867 -6 80 -10
+                    642 -10 1341 l0 1202 -615 0 -616 0 4 -1377z"/>
+                    <path d="M2423 1346 c-127 -31 -262 -133 -321 -244 -136 -254 -37 -578 212
+                    -696 87 -42 153 -56 256 -56 142 0 258 39 350 119 l45 39 -35 37 c-19 20 -47
+                    45 -62 56 l-27 20 -51 -39 c-95 -72 -210 -90 -336 -51 -88 27 -170 104 -202
+                    192 -45 119 -22 266 55 356 118 139 335 161 482 50 l52 -40 27 20 c15 11 43
+                    36 62 56 l35 37 -40 34 c-52 45 -140 90 -212 109 -68 18 -217 18 -290 1z"/>
+                    <path d="M3841 1349 c-77 -15 -188 -74 -250 -134 -246 -234 -181 -661 123
+                    -808 88 -43 152 -57 264 -57 155 0 282 50 382 150 96 96 140 208 140 355 0
+                    148 -44 258 -142 357 -63 63 -167 119 -256 137 -61 13 -197 13 -261 0z m284
+                    -184 c70 -34 148 -119 172 -187 25 -74 23 -186 -6 -260 -28 -73 -94 -141 -169
+                    -176 -49 -23 -70 -27 -152 -27 -83 0 -102 3 -151 28 -160 78 -232 270 -168
+                    443 32 86 114 165 200 193 88 29 198 24 274 -14z"/>
+                    <path d="M5386 1344 c-200 -48 -349 -211 -378 -413 -38 -262 117 -500 367
+                    -566 76 -19 234 -19 310 0 72 19 144 58 199 106 l41 37 -25 27 c-14 15 -42 40
+                    -63 57 l-37 30 -37 -33 c-67 -58 -116 -74 -228 -74 -81 0 -109 4 -147 22 -66
+                    30 -133 96 -165 162 -25 50 -28 67 -28 156 0 89 3 106 28 157 33 68 90 121
+                    166 156 47 22 70 27 146 27 76 0 98 -4 145 -26 31 -14 72 -40 91 -57 l36 -31
+                    58 59 58 59 -37 35 c-52 47 -141 93 -217 111 -79 18 -205 18 -283 -1z"/>
+                    <path d="M6470 855 l0 -495 90 0 90 0 0 403 c0 222 3 445 6 495 l7 92 -97 0
+                    -96 0 0 -495z"/>
+                    <path d="M7300 855 l0 -495 90 0 90 0 2 328 3 328 265 -327 265 -328 78 0 77
+                    -1 0 495 0 495 -90 0 -90 0 -2 -331 -3 -332 -270 332 -269 331 -73 0 -73 0 0
+                    -495z"/>
+                    <path d="M9111 1333 c-5 -10 -102 -225 -216 -478 -114 -253 -211 -468 -216
+                    -477 -9 -17 -2 -18 88 -18 l98 0 49 115 48 115 245 -2 244 -3 48 -110 47 -110
+                    98 -3 c58 -2 97 1 94 7 -1 5 -102 228 -222 495 l-219 486 -88 0 c-74 0 -90 -3
+                    -98 -17z m190 -395 l88 -203 -176 -3 c-97 -1 -178 0 -181 3 -3 3 34 97 83 210
+                    48 113 90 203 93 201 3 -3 45 -97 93 -208z"/>
+                    <path d="M11010 850 l0 -490 85 0 85 0 2 318 3 317 159 -262 159 -263 43 0 43
+                    0 160 267 161 268 0 -322 0 -323 90 0 90 0 0 429 c0 235 -3 456 -6 490 l-7 62
+                    -75 -3 -75 -3 -186 -317 c-102 -175 -188 -318 -191 -318 -3 0 -91 143 -196
+                    318 l-190 317 -77 3 -77 3 0 -491z"/>
+                    <path d="M12730 850 l0 -490 90 0 90 0 0 490 0 490 -90 0 -90 0 0 -490z"/>
+                    <path d="M13460 1334 c0 -3 74 -109 165 -235 91 -126 165 -233 165 -239 0 -5
+                    -79 -117 -175 -249 -96 -133 -175 -243 -175 -246 0 -3 46 -5 103 -5 l102 0
+                    125 177 c69 97 130 178 135 179 6 2 64 -74 130 -167 66 -94 125 -175 131 -180
+                    7 -5 57 -8 113 -7 l101 3 -180 248 c-99 136 -180 250 -180 253 0 4 76 111 170
+                    240 l169 234 -102 0 -102 0 -120 -170 c-65 -94 -121 -170 -125 -170 -3 0 -59
+                    77 -125 170 l-120 170 -102 0 c-57 0 -103 -3 -103 -6z"/>
+                    <path d="M14780 1265 l0 -75 160 0 160 0 0 -415 0 -415 95 0 95 0 0 415 0 415
+                    160 0 160 0 0 75 0 75 -415 0 -415 0 0 -75z"/>
+                    <path d="M16427 1333 c-5 -8 -424 -936 -434 -961 -4 -10 16 -12 92 -10 l97 3
+                    45 107 45 108 248 0 247 0 46 -108 45 -107 97 -3 c90 -3 97 -1 91 15 -4 10
+                    -102 231 -219 490 l-212 473 -92 0 c-50 0 -94 -3 -96 -7z m182 -385 c46 -106
+                    86 -199 88 -205 4 -10 -35 -13 -177 -13 -100 0 -180 4 -178 9 30 80 173 401
+                    178 401 3 0 44 -87 89 -192z"/>
+                    </g>
+            </svg>
+            <br/>
+            <br/>
+            <p class="info-tienda">
+                Nit. 1115189667-2
+                Telf: 3105269721
+                <br>
+                HAPPY PLACE
+                <br>
+                Dirección: Centinela Mall Local 201 - 202
+                <br>
+                
+            </p>
+        </div>
+        
+        <div class="label">
+            <h1 class="ticket">TICKET</h1>
+            <h2 class="nro_boleta" id="nro_boleta_id" ></h2>
+            <h2 class="nro_mesa" id="nro_mesa_id" ></h2>
+            <h3 class="direccion" id="nro_direccion_id" ></h3>
+        </div>
+        <div class="label">
+            <p class="fecha_recepcion">
+                FECHA DE RECEPCION Y HORA:
+                <br>
+                <b id="fechaR"></b>
+                <b id="hora"></b>
+                <br>
+                <br>
+            </p>
+
+        </div>
+
+        <!-- <div class="line">***********************************************</div> -->
+   
+        <table class="table">
+            <tbody id="tablaBody">
+                <tr class="table-header" >
+                    <th><h2>Cant</h2></th>
+                    <th><h2>Descripcion</h2></th>
+                    <th><h2>Total</h2></th>
+                </tr>
+                <script>
+                    /*var result = [
+                        { cantidad: 3, descripcion: "hamburguesa doble carne", precio_unit: 10000 },
+                        { cantidad: 5, descripcion: "Perro mas gaseosa y de todo", precio_unit: 20000 },
+                        // ... otros objetos en el array
+                    ];*/
+
+                    var tablaBody = document.getElementById("tablaBody");
+
+                    result.forEach(function(row) {
+                    var newRow = document.createElement("tr");
+                    newRow.className = "table-item";
+
+                    newRow.innerHTML = `
+                        <td class="item">${row.cantidad}</td>
+                        <td class="item">${row.descripcion}</td>
+                        <td class="item">${row.precio_unit}</td>
+                    `;
+                    tablaBody.appendChild(newRow);
+                    });
+                    // Agrega una fila adicional con un espacio
+                    var spaceRow = document.createElement("tr");
+                    spaceRow.innerHTML = `<td colspan="3">&nbsp;</td>`;
+                    tablaBody.appendChild(spaceRow);
+
+                </script>
+                <tr class="table-footer top-line">
+                    <td class=""  colspan="2" id="propincell"><h4>Propina Sugerida:</h4></td>
+                    <td colspan="2"><h4 id="propina"></h4></td>
+                </tr>
+                <tr class="table-footer top-line">
+                    <td class=""  colspan="2" id="domicilioCell"><h4>DOMICILIO:</h4></td>
+                    <td colspan="2"><h4 id="domi"></h4></td>
+                </tr>
+               
+                <tr class="table-footer">
+                    <td colspan="2"><h2>EFECTIVO:</h2></td>
+                    <td colspan="2"><h2 id="efectivo"></h2></td>
+                    
+                </tr>
+                <tr class="table-footer top-line">
+                    <td class=""  colspan="2"><h2>TOTAL:</h2></td>
+                    <td colspan="2"><h2 id="total"></h2></td>
+                </tr>
+                <tr class="table-footer">
+                    <td colspan="2"><h2>DEVUELTAS:</h2></td>
+                    <td colspan="2"><h2 id="devueltas"></h2></td>
+                </tr>
+                
+            </tbody>
+        </table>
+        <br/>
+        <p class="saldo-text">
+            <b><span class="estado-deuda" id="estado"></span></b>
+        </p>
+        <div class="policy">
+            <p class="policy-title">
+                <b>IMPORTANTE:</b>
+            </p>
+        
+            <p class="m-0">
+               Facturas AutoSystem
+               <br/>
+               Contactos:
+               +57 325 820 8619
+               <br/>
+               Siguenos en redes sociales como @AutoSystem
+            </p>
+    </div>
+    <script>
+        var nroBoletaElement = document.getElementById("nro_boleta_id").textContent = nro_boleta;
+        var nroMesaElement = document.getElementById("nro_mesa_id").textContent = nro_mesa;
+        var nroDireccion = document.getElementById("nro_direccion_id").textContent = direc;
+
+
+        var fechaElement = document.getElementById("fechaR").textContent = fecha;
+        var fecha_entregaElement = document.getElementById("hora").textContent = fecha_entrega;
+
+        const propinaCell = document.getElementById("propinaCell");
+        var propinaElement = document.getElementById("propina");
+                    // Verifica si domi es igual a "N/A"
+            if (propina == "NaN") {
+                    // Si domi es "N/A", oculta el elemento <td> que contiene la etiqueta y el valor
+                propinaCell.style.display = "none";
+            } else {
+             // Si domi no es "N/A", muestra el valor en el elemento <h2>
+             propinaElement.textContent = propina;
+            }  
+
+        const domicilioCell = document.getElementById("domicilioCell");
+        var domiElement = document.getElementById("domi");
+                    // Verifica si domi es igual a "N/A"
+            if (domi == "NaN") {
+                    // Si domi es "N/A", oculta el elemento <td> que contiene la etiqueta y el valor
+                domicilioCell.style.display = "none";
+            } else {
+             // Si domi no es "N/A", muestra el valor en el elemento <h2>
+             domiElement.textContent = domi;
+            }       
+        var totalElement = document.getElementById("total").textContent = total;
+        var subtotal_descElement = document.getElementById("efectivo").textContent = descuento;
+        var descuentoElement = document.getElementById("devueltas").textContent = subtotal_desc;
+        var estadoElement = document.getElementById("estado").textContent = estado;
+    </script>
+</body>

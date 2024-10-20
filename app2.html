@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=60mm, initial-scale=1.0"> <!-- Cambiar el ancho de la vista para el papel de 58mm -->
+    <title>Ticket de Compra</title>
+    <style>
+     body {
+            font-family: tahoma, Helvetica, sans-serif;
+            margin: 0;
+            font-size: 3mm;
+            text-align: center; /* Centrar todo el contenido */
+        }
+
+        #thermal-pos {
+           
+            margin: none;
+            max-width: 60mm;
+            
+        }
+
+        .label {
+            margin: 0;
+            margin-left: 0.5mm;
+        }
+
+        .table {
+          
+            border-collapse: collapse; /* Elimina el espacio entre celdas */
+            border-collapse: collapse;
+            border-spacing: 0;
+            
+        }
+
+        .table-header h2 {
+            margin: 0;
+            padding-left: 0.5mm;
+            
+        }
+        .table-footer.top-line td,
+        
+        .table-footer {
+            margin-left: 0.5mm;
+        }
+        .table-footer h2 {
+            margin: 0; /* Asegurarte de que no haya margen dentro de los elementos h2 */
+            padding: 1mm 0; /* Ajustar el padding superior e inferior */
+        }
+        .table-footer h4 {
+            margin: 0; /* Asegurarte de que no haya margen dentro de los elementos h2 */
+            padding: 1mm 0; /* Ajustar el padding superior e inferior */
+        }
+        .saldo-text {
+            margin: 0;
+            margin-left: 0.1mm;
+        }
+
+        .policy {
+            margin-left: 0.5mm;
+        }
+
+      /* Agrega el estilo para eliminar el espacio vertical en las celdas de las filas de la tabla */
+      .table-footer td {
+          padding: 0;
+          line-height: 1;
+      }
+      .nro_boleta {
+        margin: 0;
+        padding: 0;
+    }
+    .nro_mesa {
+        margin: 0;
+    }
+    .fecha_recepcion {
+        margin: 0;
+    }
+    
+    .info-tienda {
+        margin: 0;
+    }
+    .m-0 {
+        margin: 0;
+    }
+    .direccion {
+        margin: 0;
+        
+    }
+    .ticket{
+        margin: 0;
+        
+    }
+    .mesero1{
+        margin: 0;
+        
+    }
+    .mesero2{
+        margin: 0;
+        
+    }
+  
+
+    </style>
+  </head>
+  <body onload="window.print()" onfocus="window.close()">
+
+    <script>
+        // Obtener los parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
+
+        // Obtener los valores de los parámetros
+        var nro_boleta = params.has('boleta') ? params.get('boleta') : "---";
+        var nro_mesa = params.has('mesa') ? params.get('mesa') : "---";
+        var direc = params.has('direccion') ? params.get('direccion') : "---";
+        var observacionesProducto = params.has('comentarios') ? params.get('comentarios'): [];
+        console.log(observacionesProducto);
+        var fecha = params.has('fecha') ? params.get('fecha') : "dd/mm/aaaa hh:mm:ss";
+        var fecha_entrega = params.has('fecha_entrega') ? params.get('fecha_entrega') : "hh:mm:ss";
+        var domi = params.has('domi') ? params.get('domi') : "N/A";
+    
+        var estado = params.has('estado') ? params.get('estado') : "--";
+
+        //Recibe los datos de los servicios (separados por comas)
+        var cantidades = params.has('cantidades') ? params.get('cantidades') : "0";
+        var descripciones = params.has('servicios') ? params.get('servicios') : "No hay articulos";
+        var mesero = params.has('mesero') ? params.get('mesero') : "---";
+        
+        //Formato de 2 decimales
+        domi = parseFloat(domi).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        
+        //crea una lista de cada columna a partir de las comas.
+        cantidades = cantidades.split(",");
+        descripciones = descripciones.split(","); 
+        observacionesProducto=observacionesProducto.split(';');
+        console.log(observacionesProducto);
+
+        //Crea una lista para mostrar en cada fila de la tabla
+        var result = [];
+
+        cantidades.forEach(function(value, id) {
+                
+            result[id] = {
+                cantidad: cantidades[id],
+                descripcion: descripciones[id], // + " " + detalles[id], 
+                obs: observacionesProducto[id], // Obtener las observaciones correspondientes
+            };
+        });
+        
+    </script>
+    <div id="thermal-pos">
+        <div class="label">
+            <h1 class="ticket">TICKET</h1>
+            <h2 class="nro_boleta" id="nro_boleta_id" ></h2>
+            <h2 class="nro_mesa" id="nro_mesa_id" ></h2>
+            <h3 class="direccion" id="nro_direccion_id" ></h3>
+            <h1 class="mesero1">MESERO</h1>
+            <h2 class="mesero2" id="mesero_id" ></h2>
+        </div>
+        <div class="label">
+            <p class="fecha_recepcion">
+                FECHA DE RECEPCION Y HORA:
+                <br>
+                <b id="fechaR"></b>
+                <b id="hora"></b>
+                <br>
+            </p>
+
+        </div>
+
+        <!-- <div class="line">***********************************************</div> -->
+   
+        <table class="table">
+            <tbody id="tablaBody">
+                <tr class="table-header" >
+                    <th><h2>Cant</h2></th>
+                    <th><h2>Descripcion</h2></th>
+                </tr>
+                <script>
+                    /*var result = [
+                        { cantidad: 3, descripcion: "hamburguesa doble carne", precio_unit: 10000 },
+                        { cantidad: 5, descripcion: "Perro mas gaseosa y de todo", precio_unit: 20000 },
+                        // ... otros objetos en el array
+                    ];*/
+
+                    var tablaBody = document.getElementById("tablaBody");
+
+                    result.forEach(function(row) {
+                    var newRow = document.createElement("tr");
+                    newRow.className = "table-item";
+
+                    newRow.innerHTML = `
+                        <td class="item">${row.cantidad}</td>
+                        <td class="item">${row.descripcion}</td>
+                    `;
+                        tablaBody.appendChild(newRow);
+                        
+                    
+                        var obsRow = document.createElement("tr");
+                        obsRow.innerHTML = `<td colspan="2" class="item">${row.obs}</td>`;
+                        tablaBody.appendChild(obsRow);
+                });
+        
+                </script>
+            </tbody>
+        </table>
+        <p class="saldo-text">
+            <b><span class="estado-deuda" id="estado"></span></b>
+        </p>
+        <div class="policy">
+            <p class="policy-title">
+                <b>IMPORTANTE:</b>
+            </p>
+            <p class="m-0">
+               Facturas AutoSystem
+               <br/>
+               Contactos:
+               +57 325 820 8619
+               <br/>
+               Siguenos en redes sociales como @AutoSystem
+            </p>
+    </div>
+    <script>
+        var nroBoletaElement = document.getElementById("nro_boleta_id").textContent = nro_boleta;
+        var nroMesaElement = document.getElementById("nro_mesa_id").textContent = nro_mesa;
+        var nroDireccion = document.getElementById("nro_direccion_id").textContent = direc;
+        var nroMesero = document.getElementById("mesero_id").textContent = mesero;
+
+
+        var fechaElement = document.getElementById("fechaR").textContent = fecha;
+        var fecha_entregaElement = document.getElementById("hora").textContent = fecha_entrega;
+
+    
+        const domicilioCell = document.getElementById("domicilioCell");
+        var domiElement = document.getElementById("domi");
+                    // Verifica si domi es igual a "N/A"
+            if (domi == "NaN") {
+                    // Si domi es "N/A", oculta el elemento <td> que contiene la etiqueta y el valor
+                domicilioCell.style.display = "none";
+            } else {
+             // Si domi no es "N/A", muestra el valor en el elemento <h2>
+             domiElement.textContent = domi;
+            }       
+        
+        var estadoElement = document.getElementById("estado").textContent = estado;
+    </script>
+</body>

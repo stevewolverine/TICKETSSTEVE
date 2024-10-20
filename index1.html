@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=60mm, initial-scale=1.0"> <!-- Cambiar el ancho de la vista para el papel de 58mm -->
+    <title>Ticket de Compra</title>
+    <style>
+     body {
+            font-family: tahoma, Helvetica, sans-serif;
+            margin: 0;
+            font-size: 3mm;
+            text-align: center; /* Centrar todo el contenido */
+        }
+
+        #thermal-pos {
+           
+            margin: none;
+            max-width: 60mm;
+            
+        }
+
+        .label {
+            margin: 0;
+            margin-left: 0.5mm;
+        }
+
+        .table {
+          
+            border-collapse: collapse; /* Elimina el espacio entre celdas */
+            border-collapse: collapse;
+            border-spacing: 0;
+            
+        }
+
+        .table-header h2 {
+            margin: 0;
+            padding-left: 0.5mm;
+            
+        }
+        .table-footer.top-line td,
+        
+        .table-footer {
+            margin-left: 0.5mm;
+        }
+        .table-footer h2 {
+            margin: 0; /* Asegurarte de que no haya margen dentro de los elementos h2 */
+            padding: 1mm 0; /* Ajustar el padding superior e inferior */
+        }
+        .table-footer h4 {
+            margin: 0; /* Asegurarte de que no haya margen dentro de los elementos h2 */
+            padding: 1mm 0; /* Ajustar el padding superior e inferior */
+        }
+        .saldo-text {
+            margin: 0;
+            margin-left: 0.1mm;
+        }
+
+        .policy {
+            margin-left: 0.5mm;
+        }
+
+      /* Agrega el estilo para eliminar el espacio vertical en las celdas de las filas de la tabla */
+      .table-footer td {
+          padding: 0;
+          line-height: 1;
+      }
+      .nro_boleta {
+        margin: 0;
+        padding: 0;
+    }
+    .nro_mesa {
+        margin: 0;
+    }
+    .fecha_recepcion {
+        margin: 0;
+    }
+    
+    .info-tienda {
+        margin: 0;
+    }
+    .m-0 {
+        margin: 0;
+    }
+    .direccion {
+        margin: 0;
+        
+    }
+  
+
+    </style>
+  </head>
+  <body onload="window.print()" onfocus="window.close()">
+
+    <script>
+        // Obtener los parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
+
+        // Obtener los valores de los parámetros
+        var nro_boleta = params.has('boleta') ? params.get('boleta') : "---";
+        var nro_mesa = params.has('mesa') ? params.get('mesa') : "---";
+        var direc = params.has('direccion') ? params.get('direccion') : "---";
+        
+
+        var fecha = params.has('fecha') ? params.get('fecha') : "dd/mm/aaaa hh:mm:ss";
+        var fecha_entrega = params.has('fecha_entrega') ? params.get('fecha_entrega') : "hh:mm:ss";
+        var domi = params.has('domi') ? params.get('domi') : "N/A";
+        var propina = params.has('propina') ? params.get('propina') : "N/A";
+
+        var total = params.has('total') ? params.get('total') : "";
+        var subtotal_desc = params.has('subtotal_desc') ? params.get('subtotal_desc') : " ";
+        var descuento = params.has('descuento') ? params.get('descuento') : " ";
+        var estado = params.has('estado') ? params.get('estado') : "--";
+
+        //Recibe los datos de los servicios (separados por comas)
+        var cantidades = params.has('cantidades') ? params.get('cantidades') : "0";
+        var descripciones = params.has('servicios') ? params.get('servicios') : "No hay articulos";
+        var p_units = params.has('p_unit') ? params.get('p_unit') : "0.00";
+        
+        //Formato de 2 decimales
+        propina = parseFloat(propina).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        domi = parseFloat(domi).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        total = parseFloat(total).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        descuento = parseFloat(descuento).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        subtotal_desc = parseFloat(subtotal_desc).toLocaleString('es-ES', { minimumFractionDigits: 0 });
+        
+        //crea una lista de cada columna a partir de las comas.
+        cantidades = cantidades.split(",");
+        descripciones = descripciones.split(","); 
+        p_units = p_units.split(",");
+
+        //Crea una lista para mostrar en cada fila de la tabla
+        var result = [];
+
+        cantidades.forEach(function(value, id) {
+            result[id] = {
+                cantidad: cantidades[id],
+                descripcion: descripciones[id], // + " " + detalles[id], // Descomenta si deseas concatenar la descripción con el detalle
+                precio_unit: parseFloat(p_units[id]).toLocaleString('es-ES', { minimumFractionDigits: 0 }),
+            };
+        });
+    </script>
+    <div id="thermal-pos">
+        <div class="label">
+            <div style="margin-top: 1cm; text-align: center;"> <!-- Desplaza el SVG 1 cm hacia abajo y centra -->
+                <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                     width="117.3pt" height="117.3pt" viewBox="0 0 204 204"
+                     preserveAspectRatio="xMidYMid meet">
+              
+                  <g transform="translate(0.000000,204.000000) scale(0.100000,-0.100000)" 
+                     fill="#000000" stroke="none">
+                    <path d="M0 1020 l0 -1020 1020 0 1020 0 0 1020 0 1020 -1020 0 -1020 0 0
+                          -1020z m1230 595 l-135 -135 -87 0 c-49 0 -88 3 -88 7 0 3 37 64 83 135 l82
+                          128 140 0 140 0 -135 -135z m-70 -252 c200 -54 310 -223 310 -475 l0 -89 -325
+                          3 -326 3 7 -40 c20 -126 90 -188 210 -189 70 0 125 27 149 75 l16 29 129 0
+                          c97 0 130 -3 130 -12 0 -30 -53 -122 -97 -169 -80 -86 -191 -129 -331 -129
+                          -154 0 -267 43 -350 134 -81 89 -116 204 -116 381 -1 175 44 295 143 388 56
+                          52 109 79 192 96 106 22 163 20 259 -6z"/>
+                    <path d="M928 1150 c-44 -23 -72 -61 -87 -115 -19 -69 -29 -65 179 -65 105 0
+                          190 4 190 8 0 5 -7 31 -15 58 -16 54 -62 106 -108 123 -44 17 -118 12 -159 -9z"/>
+                  </g>
+                </svg>
+              </div>
+
+
+                                            
+            <br/>
+            <br/>
+            <p class="info-tienda"> 
+                <br>
+                Ignacio Mariscal 8  Col Tabacalera Cuauhtemoc CDMX
+                <br>
+                
+            </p>
+        </div>
+        
+        <div class="label">
+            <b>TICKET:</b>
+            <h1 class="nro_boleta" id="nro_boleta_id" ></h1>
+            <h1 class="nro_mesa" id="nro_mesa_id" ></h1>
+            <h3 class="direccion" id="nro_direccion_id" ></h3>
+        </div>
+        <div class="label">
+            <p class="fecha_recepcion">
+                FECHA DE RECEPCION:
+                <br>
+                <b id="fechaR"></b>
+                <b span id="hora"></b>
+            </p>
+
+        </div>
+
+        <!-- <div class="line">***********************************************</div> -->
+        
+   
+        <table class="table">
+            <tbody id="tablaBody">
+                <tr class="table-header" >
+                    <th><h2>Cant</h2></th>
+                    <th><h2>Descripcion</h2></th>
+                    <th><h2>Total</h2></th>
+                </tr>
+                <script>
+                    /*var result = [
+                        { cantidad: 3, descripcion: "hamburguesa doble carne", precio_unit: 10000 },
+                        { cantidad: 5, descripcion: "Perro mas gaseosa y de todo", precio_unit: 20000 },
+                        // ... otros objetos en el array
+                    ];*/
+
+                    var tablaBody = document.getElementById("tablaBody");
+
+                    result.forEach(function(row) {
+                    var newRow = document.createElement("tr");
+                    newRow.className = "table-item";
+
+                    newRow.innerHTML = `
+                        <td class="item">${row.cantidad}</td>
+                        <td class="item">${row.descripcion}</td>
+                        <td class="item">${row.precio_unit}</td>
+                    `;
+                    tablaBody.appendChild(newRow);
+                    });
+                    // Agrega una fila adicional con un espacio
+                    var spaceRow = document.createElement("tr");
+                    spaceRow.innerHTML = `<td colspan="3">&nbsp;</td>`;
+                    tablaBody.appendChild(spaceRow);
+
+                </script>
+                <!-- 
+                <tr class="table-footer top-line">
+                    <td class=""  colspan="2" id="propincell"><h4>Propina Sugerida:</h4></td>
+                    <td colspan="2"><h4 id="propina"></h4></td>
+                </tr>
+                <tr class="table-footer top-line">
+                    <td class=""  colspan="2" id="domicilioCell"><h4>DOMICILIO:</h4></td>
+                    <td colspan="2"><h4 id="domi"></h4></td>
+                </tr>
+               -->
+                <tr class="table-footer">
+                    <td colspan="2"><h2>EFECTIVO:</h2></td>
+                    <td colspan="2"><h2 id="efectivo"></h2></td>
+                    
+                </tr>
+                <tr class="table-footer top-line">
+                    <td class=""  colspan="2"><h2>TOTAL:</h2></td>
+                    <td colspan="2"><h2 id="total"></h2></td>
+                </tr>
+                <tr class="table-footer">
+                    <td colspan="2"><h2>DEVUELTAS:</h2></td>
+                    <td colspan="2"><h2 id="devueltas"></h2></td>
+                </tr>
+                
+            </tbody>
+        </table>
+        <br/>
+        <p class="saldo-text">
+            <b><span class="estado-deuda" id="estado"></span></b>
+        </p>
+        <div class="policy">
+            <p class="policy-title">
+                <b>IMPORTANTE:</b>
+            </p>
+        
+            <p class="m-0">
+               Ticket para Factura
+               <br/>
+               Contactos:
+               55 55 35 75 57
+               <br/>
+               Siguenos en redes sociales como @EDEBE.MX
+            </p>
+    </div>
+    <script>
+        var nroBoletaElement = document.getElementById("nro_boleta_id").textContent = nro_boleta;
+        var nroMesaElement = document.getElementById("nro_mesa_id").textContent = nro_mesa;
+        var nroDireccion = document.getElementById("nro_direccion_id").textContent = direc;
+
+
+        var fechaElement = document.getElementById("fechaR").textContent = fecha;
+        var fecha_entregaElement = document.getElementById("hora").textContent = fecha_entrega;
+
+        /*const propinaCell = document.getElementById("propinaCell");
+        var propinaElement = document.getElementById("propina");
+                    // Verifica si domi es igual a "N/A"
+            if (propina == "NaN") {
+                    // Si domi es "N/A", oculta el elemento <td> que contiene la etiqueta y el valor
+                propinaCell.style.display = "none";
+            } else {
+             // Si domi no es "N/A", muestra el valor en el elemento <h2>
+             propinaElement.textContent = propina;
+            }  
+
+        const domicilioCell = document.getElementById("domicilioCell");
+        var domiElement = document.getElementById("domi");
+                    // Verifica si domi es igual a "N/A"
+            if (domi == "NaN") {
+                    // Si domi es "N/A", oculta el elemento <td> que contiene la etiqueta y el valor
+                domicilioCell.style.display = "none";
+            } else {
+             // Si domi no es "N/A", muestra el valor en el elemento <h2>
+             domiElement.textContent = domi;
+            }       */
+        var totalElement = document.getElementById("total").textContent = total;
+        var subtotal_descElement = document.getElementById("efectivo").textContent = descuento;
+        var descuentoElement = document.getElementById("devueltas").textContent = subtotal_desc;
+        var estadoElement = document.getElementById("estado").textContent = estado;
+    </script>
+</body>
+
+
+
+
+
+
+
+
+
+
+

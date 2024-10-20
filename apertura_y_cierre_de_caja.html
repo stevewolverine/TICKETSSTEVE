@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reporte de Cierre Caja</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.4;
+        color: #333;
+        max-width: 100%;
+        margin: 0;
+        padding: 10px;
+        font-size: 12px;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #2c3e50;
+        text-align: center;
+        margin: 10px 0;
+      }
+      .info-block {
+        margin-bottom: 15px;
+      }
+      .info-block p {
+        margin: 3px 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+        border: 1px solid black;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: center;
+        font-size: 11px;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .totals {
+        font-weight: bold;
+      }
+      .observation {
+        background-color: #f9f9f9;
+        padding: 8px;
+        border-left: 3px solid #2c3e50;
+      }
+
+      .valor-faltante,
+      .totalcaja-app {
+        background-color: #ff6b6b;
+        color: white;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-weight: bold;
+      }
+      .valor-excedente,
+      .total-efectivo-caja {
+        background-color: #51cf66;
+        color: white;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-weight: bold;
+      }
+      .dinero-info {
+        text-align: left;
+        margin-bottom: 15px;
+      }
+      .dinero-info h3 {
+        text-align: left;
+        margin: 3px 0;
+      }
+
+      /* Nuevos estilos para resaltar las columnas */
+      .columna-resaltada {
+        border-left: 3px solid #000000;
+        border-right: 3px solid #000000;
+      }
+      .columna-resaltada:first-of-type {
+        border-left: 3px solid #000000;
+      }
+      .columna-resaltada:last-of-type {
+        border-right: 3px solid #000000;
+      }
+      th.columna-resaltada {
+        border-top: 3px solid #000000;
+      }
+      #tabla-insumos tr:last-child .columna-resaltada {
+        border-bottom: 3px solid #000000;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="titulo-reporte">REPORTE DE CIERRE CAJA</h1>
+
+    <div class="info-block">
+      <p id="nombre"><strong>Nombre:</strong></p>
+      <p id="fecha-generacion"><strong>Generado:</strong></p>
+      <p id="fecha-inicio"><strong>Desde:</strong></p>
+      <p id="fecha-fin"><strong>Hasta:</strong></p>
+      <p id="estado-caja"><strong>¿Cuadro Caja?:</strong></p>
+
+      <p>
+        <span class="etiqueta valor-faltante">Valor Faltante:</span>
+        <span id="valor-faltante" class="valor-faltante"></span>
+        <span class="etiqueta valor-faltante">Valor Faltante Calculado:</span>
+        <span id="valor-faltante-calculado" class="valor-faltante"></span>
+      </p>
+      <p>
+        <span class="etiqueta valor-excedente">Valor Excedente:</span>
+        <span id="valor-excedente" class="valor-excedente"></span>
+        <span class="etiqueta valor-excedente">Valor Excedente Calculado:</span>
+        <span id="valor-excedente-calculado" class="valor-excedente"></span>
+      </p>
+
+      <p id="efectivo-apertura-cierre">
+        <strong>Efectivo de Apertura: </strong
+        ><span id="efectivo-apertura"></span>
+        <strong>Efectivo de Cierre: </strong><span id="efectivo-cierre"></span>
+      </p>
+    </div>
+
+    <!-- Tabla de insumos actualizada -->
+    <table id="tabla-insumos">
+      <tr>
+        <th>Nombre Insumo</th>
+        <th>Para que producto</th>
+        <th>Unidad de medida</th>
+        <th>Cant apertura</th>
+        <th>Cant de cierre</th>
+        <th class="columna-resaltada">Se utilizaron</th>
+        <th class="columna-resaltada">Cantidad Vendida</th>
+        <th>Observacion</th>
+      </tr>
+      <!-- Las filas se agregarán dinámicamente con JavaScript -->
+    </table>
+
+    <div class="totals">
+      <p id="total-12-onz">Total 12 Onz:</p>
+      <p id="total-24-onz">Total 24 Onz:</p>
+      <p class="total-efectivo-caja" id="total-efectivo-caja">
+        Generado entre las fechas (Total de efectivo en caja):
+      </p>
+    </div>
+
+    <h2 id="total-ventas">TOTAL DE VENTAS:</h2>
+
+    <table>
+      <tr>
+        <th>CONCEPTO</th>
+        <th>VALOR</th>
+      </tr>
+      <tr>
+        <td>Efectivo Recibido:</td>
+        <td id="valor-efectivo"></td>
+      </tr>
+      <tr>
+        <td>Transferencias:</td>
+        <td id="valor-transferencias"></td>
+      </tr>
+      <tr>
+        <td>Tarjeta:</td>
+        <td id="valor-tarjeta"></td>
+      </tr>
+      <tr>
+        <td>Número de Ordenes Repartidas:</td>
+        <td id="num-ordenes"></td>
+      </tr>
+      <tr>
+        <td>Efectivo Repartido:</td>
+        <td id="valor-efectivo-repartido"></td>
+      </tr>
+      <tr>
+        <td>Transferencias Repartidas:</td>
+        <td id="valor-transferencias-repartidas"></td>
+      </tr>
+      <tr class="totalcaja-app">
+        <td>Total de efectivo en caja - app:</td>
+        <td id="valor-total-efectivo"></td>
+      </tr>
+      <tr>
+        <td>Total de Transferencias:</td>
+        <td id="valor-total-transferencias"></td>
+      </tr>
+    </table>
+
+    <p id="advertencia" class="warning">
+      NOTA: Si el valor en ROJO es mayor que el VERDE quiere decir que hace
+      falta efectivo en caja (posiblemente diste más cambio, o registraste
+      algunas ventas como si te hubieran pagado en efectivo pero te las pagaron
+      por transferencias u otros medios revisar bien.) así mismo con el total de
+      transferencias.
+    </p>
+
+    <div class="observation">
+      <h3 id="titulo-observaciones">OBSERVACIONES:</h3>
+      <p id="obs-info"></p>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var params = new URLSearchParams(window.location.search);
+
+        function formatPrice(price) {
+          return (
+            "$" +
+            parseFloat(price)
+              .toLocaleString("es-CO", {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })
+              .replace(/,/g, ".")
+          );
+        }
+
+        function setElementContent(id, paramName, isPrice = false) {
+          var element = document.getElementById(id);
+          if (element) {
+            var value = params.has(paramName) ? params.get(paramName) : "---";
+            if (isPrice && value !== "---") {
+              value = formatPrice(value);
+            }
+            element.textContent += " " + value;
+          }
+        }
+
+        // Información general
+        setElementContent("nombre", "nombre");
+        setElementContent("fecha-generacion", "fechaGeneracion");
+        setElementContent("fecha-inicio", "fechaInicio");
+        setElementContent("fecha-fin", "fechaFin");
+        setElementContent("estado-caja", "estadoCaja");
+        setElementContent("valor-faltante", "valorFaltante", true);
+        setElementContent(
+          "valor-faltante-calculado",
+          "valorFaltanteCalculado",
+          true
+        );
+        setElementContent("valor-excedente", "valorExcedente", true);
+        setElementContent(
+          "valor-excedente-calculado",
+          "valorExcedenteCalculado",
+          true
+        );
+        setElementContent("efectivo-apertura", "efectivoApertura", true);
+        setElementContent("efectivo-cierre", "efectivoCierre", true);
+
+        // Cantidades
+        setElementContent("cant-ap-12-licor", "cantAp12Licor");
+        setElementContent("cant-ci-12-licor", "cantCi12Licor");
+        setElementContent("cant-ap-12-sin", "cantAp12Sin");
+        setElementContent("cant-ci-12-sin", "cantCi12Sin");
+        setElementContent("cant-ap-12-crem", "cantAp12Crem");
+        setElementContent("cant-ci-12-crem", "cantCi12Crem");
+        setElementContent("cant-ap-24", "cantAp24");
+        setElementContent("cant-ci-24", "cantCi24");
+
+        // Diferencias
+        setElementContent("dif-12-licor", "dif12Licor");
+        setElementContent("dif-12-sin", "dif12Sin");
+        setElementContent("dif-12-crem", "dif12Crem");
+        setElementContent("dif-24", "dif24");
+
+        // Totales
+        setElementContent("total-12-onz", "total12Onz");
+        setElementContent("total-24-onz", "total24Onz");
+        setElementContent("total-efectivo-caja", "totalEfectivoCaja", true);
+        setElementContent("total-ventas", "totalVentas", true);
+
+        // Valores de la tabla
+        setElementContent("valor-efectivo", "valorEfectivo", true);
+        setElementContent("valor-transferencias", "valorTransferencias", true);
+        setElementContent("valor-tarjeta", "valorTarjeta", true);
+        setElementContent("num-ordenes", "numOrdenes");
+        setElementContent(
+          "valor-efectivo-repartido",
+          "valorEfectivoRepartido",
+          true
+        );
+        setElementContent(
+          "valor-transferencias-repartidas",
+          "valorTransferenciasRepartidas",
+          true
+        );
+        setElementContent("valor-total-efectivo", "valorTotalEfectivo", true);
+        setElementContent(
+          "valor-total-transferencias",
+          "valorTotalTransferencias",
+          true
+        );
+
+        // Observaciones
+        setElementContent("obs-info", "obsinfo");
+
+        // Dinero faltante y excedente
+        setElementContent("dinero-faltante", "dineroFaltante", true);
+        setElementContent("dinero-excedente", "dineroExcedente", true);
+
+        // Procesar productos y cantidades vendidas
+        var nombresProductos = params.get("nombreProducto")
+          ? params.get("nombreProducto").split(",")
+          : [];
+        var cantidadesProductos = params.get("cantidadesProducto")
+          ? params.get("cantidadesProducto").split(",")
+          : [];
+
+        var productos = {};
+        for (var i = 0; i < nombresProductos.length; i++) {
+          var nombreProducto = decodeURIComponent(nombresProductos[i].trim());
+          var cantidadProducto =
+            parseInt(cantidadesProductos[i].trim(), 10) || 0;
+
+          if (productos[nombreProducto]) {
+            productos[nombreProducto] += cantidadProducto;
+          } else {
+            productos[nombreProducto] = cantidadProducto;
+          }
+        }
+
+        // Procesar y mostrar la tabla de insumos actualizada
+        try {
+          var nombresInsumos = params.get("insumosnombre")
+            ? params.get("insumosnombre").split(",")
+            : [];
+          var productosInsumos = params.get("insumosproducto")
+            ? params.get("insumosproducto").split(",")
+            : [];
+          var unidadesInsumos = params.get("insumosunidad")
+            ? params.get("insumosunidad").split(",")
+            : [];
+          var cantidadesApertura = params.get("insumoscantidada")
+            ? params.get("insumoscantidada").split(",")
+            : [];
+          var cantidadesCierre = params.get("insumoscantidadc")
+            ? params.get("insumoscantidadc").split(",")
+            : [];
+          var cantidadesUtilizadas = params.get("insumosutilizaron")
+            ? params.get("insumosutilizaron").split(",")
+            : [];
+          var observacionesInsumos = params.get("insumosobs")
+            ? params.get("insumosobs").split(",")
+            : [];
+
+          var tablaInsumos = document.getElementById("tabla-insumos");
+          if (tablaInsumos) {
+            if (
+              nombresInsumos.length === 0 ||
+              (nombresInsumos.length === 1 && nombresInsumos[0].trim() === "")
+            ) {
+              var fila = document.createElement("tr");
+              fila.innerHTML =
+                '<td colspan="8">No hay insumos registrados</td>';
+              tablaInsumos.appendChild(fila);
+            } else {
+              for (var i = 0; i < nombresInsumos.length; i++) {
+                var fila = document.createElement("tr");
+                var productoInsumo = decodeURIComponent(
+                  productosInsumos[i] || "Vacio"
+                ).trim();
+                var cantidadVendida = productos[productoInsumo] || 0;
+                fila.innerHTML = `
+                  <td>${decodeURIComponent(
+                    nombresInsumos[i] || "Vacio"
+                  ).trim()}</td>
+                  <td>${productoInsumo}</td>
+                  <td>${decodeURIComponent(
+                    unidadesInsumos[i] || "Vacio"
+                  ).trim()}</td>
+                  <td>${(cantidadesApertura[i] || "Vacio").trim()}</td>
+                  <td>${(cantidadesCierre[i] || "Vacio").trim()}</td>
+                  <td>${(cantidadesUtilizadas[i] || "No Item").trim()}</td>
+                  <td>${cantidadVendida}</td>
+                  <td>${decodeURIComponent(
+                    observacionesInsumos[i] || "Vacio"
+                  ).trim()}</td>
+                `;
+                tablaInsumos.appendChild(fila);
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error al procesar la tabla de insumos:", error);
+        }
+
+        // Función para formatear la fecha
+        function formatearFecha(fechaStr) {
+          const meses = [
+            "enero",
+            "febrero",
+            "marzo",
+            "abril",
+            "mayo",
+            "junio",
+            "julio",
+            "agosto",
+            "septiembre",
+            "octubre",
+            "noviembre",
+            "diciembre",
+          ];
+          const fecha = new Date(fechaStr);
+          return `${fecha.getDate()} de ${meses[fecha.getMonth()]} del ${fecha.getFullYear()}`;
+        }
+
+        // Obtener la fecha de inicio y formatearla
+        const fechaInicio = params.get("fechaInicio");
+        const fechaFormateada = fechaInicio
+          ? formatearFecha(fechaInicio)
+          : "Fecha no disponible";
+
+        // Configurar opciones para html2pdf
+        var opt = {
+          margin: 5,
+          filename: `Cierre_y_apertura_${fechaFormateada}.pdf`,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, letterRendering: true },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+        };
+
+        // Generar y descargar el PDF
+        html2pdf()
+          .set(opt)
+          .from(document.body)
+          .save()
+          .then(function () {
+            console.log("PDF generado y descargado");
+          });
+      });
+    </script>
+  </body>
+</html>
